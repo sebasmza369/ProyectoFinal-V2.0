@@ -1,0 +1,75 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// 1. Consultamos la API para obtener los libros[cite: 2]
+let librosDestacados = [];
+try {
+  const response = await fetch('http://localhost:3000/api/v1/libros');
+  if (response.ok) {
+    const todosLosLibros = await response.json();
+    // ✂️ Tomamos únicamente los primeros 3 libros
+    librosDestacados = todosLosLibros.slice(0, 3);
+  }
+} catch (error) {
+  console.error('Error al cargar libros destacados:', error);
+}
+---
+
+<Layout title="Inicio - LecturaViva">
+  <!-- 1. HERO BANNER 🎯 -->
+  <section style="background-color: var(--color-bg-card); border: 1px solid var(--color-border); border-radius: 12px; padding: 3rem 2rem; margin-top: 1.5rem; text-align: center; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
+    <h1 style="font-size: 2.5rem; font-weight: 800; color: var(--color-text-main); margin-bottom: 1rem;">
+      Descubre tu próxima lectura favorita 📖
+    </h1>
+    <p style="font-size: 1.15rem; color: var(--color-text-muted); max-width: 600px; margin: 0 auto 2rem auto; line-height: 1.6;">
+      Explora nuestro catálogo de libros, consulta detalles de autores y comparte tus recomendaciones con la comunidad.
+    </p>
+    <a 
+      href="/catalogo" 
+      style="display: inline-block; background-color: var(--color-primary); color: #ffffff; padding: 0.85rem 1.75rem; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 1rem; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);"
+    >
+      Explorar Catálogo Completo 📚
+    </a>
+  </section>
+
+  <!-- 2. LIBROS DESTACADOS ⭐ -->
+  <section style="margin-top: 3rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+      <h2 style="font-size: 1.75rem; font-weight: bold; color: var(--color-text-main); margin: 0;">
+        Libros Destacados ⭐
+      </h2>
+      <a href="/catalogo" style="color: var(--color-primary); text-decoration: none; font-weight: 600;">
+        Ver todos →
+      </a>
+    </div>
+
+    <!-- Grilla de 3 tarjetas -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;">
+      {librosDestacados.length > 0 ? (
+        librosDestacados.map((libro: any) => (
+          <article style="background-color: var(--color-bg-card); border: 1px solid var(--color-border); border-radius: 8px; padding: 1.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <h3 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 0.5rem; color: var(--color-text-main);">
+                {libro.titulo}
+              </h3>
+              <p style="color: var(--color-text-muted); font-size: 0.95rem; margin-bottom: 0.5rem;">
+                <strong>Autor:</strong> {libro.autor || 'Desconocido'}
+              </p>
+              <p style="color: var(--color-text-muted); font-size: 0.95rem; margin-bottom: 1rem;">
+                {libro.sinopsis ? libro.sinopsis.substring(0, 90) + '...' : 'Sin descripción disponible.'}
+              </p>
+            </div>
+            <a 
+              href={`/detalle/${libro.id}`} 
+              style="display: block; text-align: center; background-color: var(--color-primary); color: white; padding: 0.5rem; border-radius: 6px; text-decoration: none; font-weight: 500;"
+            >
+              Ver Detalle →
+            </a>
+          </article>
+        ))
+      ) : (
+        <p style="color: var(--color-text-muted);">No hay libros destacados disponibles en este momento.</p>
+      )}
+    </div>
+  </section>
+</Layout>

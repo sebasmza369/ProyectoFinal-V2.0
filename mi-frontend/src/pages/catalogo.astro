@@ -1,0 +1,128 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Catálogo de Libros">
+  <section style="margin-top: 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+      <div>
+        <h1 style="font-size: 2.25rem; font-weight: bold; margin-bottom: 0.5rem; color: var(--color-text-main);">
+          Catálogo Completo 📚
+        </h1>
+        <p style="color: var(--color-text-muted); margin: 0;">
+          Explora nuestra colección y selecciona un libro para ver sus detalles.
+        </p>
+      </div>
+
+      <!-- ➕ Botón para ir a la vista de creación -->
+      <a 
+        href="/crear" 
+        style="display: inline-block; background-color: var(--color-primary); color: #ffffff; padding: 0.75rem 1.25rem; border-radius: 6px; text-decoration: none; font-weight: 600; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);"
+      >
+        ➕ Agregar Libro
+      </a>
+    </div>
+
+    <!-- 🔍 BARRA DE BÚSQUEDA ÚNICA -->
+    <div style="margin-bottom: 2rem; display: flex; gap: 0.5rem; max-width: 500px;">
+      <input 
+        type="text" 
+        id="input-busqueda" 
+        placeholder="Buscar por título..." 
+        style="padding: 0.75rem; border: 1px solid var(--color-border); border-radius: 6px; flex-grow: 1;"
+      />
+      <button 
+        id="btn-buscar"
+        style="background-color: var(--color-primary); color: white; border: none; padding: 0.75rem 1.25rem; border-radius: 6px; cursor: pointer; font-weight: 600;"
+      >
+        🔍 Buscar
+      </button>
+    </div>
+
+    <!-- 📦 CONTENEDOR ÚNICO DE TARJETAS -->
+    <div id="contenedor-libros" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;">
+      <!-- Se llena dinámicamente con JavaScript -->
+    </div>
+  </section>
+</Layout>
+
+<script>
+  const contenedor = document.getElementById('contenedor-libros') as HTMLElement;
+  const inputBusqueda = document.getElementById('input-busqueda') as HTMLInputElement;
+  const btnBuscar = document.getElementById('btn-buscar');
+
+  // 1. Función para obtener libros de la API y pintar las tarjetas
+  async function cargarLibros(buscar = '') {
+    try {
+      const url = buscar 
+        ? `http://localhost:3000/api/v1/libros?buscar=${encodeURIComponent(buscar)}`
+        : 'http://localhost:3000/api/v1/libros';
+
+      const res = await fetch(url);
+      const libros = await res.json();
+
+      if (libros.length === 0) {
+        contenedor.innerHTML = '<p style="color: var(--color-text-muted);">No se encontraron libros que coincidan con la búsqueda.</p>';
+        return;
+      }
+
+      // Renderizado dinámico (Ruta /detalle/ corregida) 🎨
+      contenedor.innerHTML = libros.map((libro: any) => `
+        <article style="background-color: var(--color-bg-card); border: 1px solid var(--color-border); border-radius: 8px; padding: 1.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <h2 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 0.5rem; color: var(--color-text-main);">${libro.titulo}</h2>
+            <p style="color: var(--color-text-muted); font-size: 0.95rem; margin-bottom: 0.5rem;"><strong>Autor:</strong> ${libro.autor || 'Desconocido'}</p>
+            <p style="color: var(--color-text-muted); font-size: 0.95rem; margin-bottom: 1rem;">
+              ${libro.sinopsis ? libro.sinopsis.substring(0, 100) + '...' : 'Sin descripción disponible'}
+            </p>
+          </div>
+          <div>
+            <a href="/detalle/${libro.id}" style="display: block; text-align: center; background-color: var(--color-primary); color: white; padding: 0.5rem; border-radius: 6px; text-decoration: none; font-weight: 500; margin-top: 0.5rem;">
+              Ver Detalle →
+            </a>
+            <button class="btn-eliminar" data-id="${libro.id}" style="width: 100%; background-color: var(--color-danger); color: white; border: none; padding: 0.5rem; border-radius: 4px; cursor: pointer; margin-top: 0.5rem; font-weight: 500;">
+              🗑️ Eliminar
+            </button>
+          </div>
+        </article>
+      `).join('');
+
+      activarBotonesEliminar();
+
+    } catch (error) {
+      console.error('Error al cargar libros:', error);
+      contenedor.innerHTML = '<p style="color: var(--color-danger);">Ocurrió un error al cargar el catálogo.</p>';
+    }
+  }
+
+  btnBuscar?.addEventListener('click', () => {
+    cargarLibros(inputBusqueda.value.trim());
+  });
+
+  inputBusqueda?.addEventListener('keyup', (e) => {
+    if (e.key === 'Enter') {
+      cargarLibros(inputBusqueda.value.trim());
+    }
+  });
+
+  cargarLibros();
+
+  function activarBotonesEliminar() {
+    document.querySelectorAll('.btn-eliminar').forEach((boton) => {
+      boton.addEventListener('click', async (e) => {
+        const id = (e.target as HTMLElement).getAttribute('data-id');
+        if (!confirm(`¿Deseas eliminar el libro con ID ${id}?`)) return;
+
+        try {
+          const res = await fetch(`http://localhost:3000/api/v1/libros/${id}`, { method: 'DELETE' });
+          if (res.ok) {
+            alert('¡Libro eliminado!');
+            cargarLibros(inputBusqueda.value.trim());
+          }
+        } catch (err) {
+          alert('Error al conectar con el servidor.');
+        }
+      });
+    });
+  }
+</script>

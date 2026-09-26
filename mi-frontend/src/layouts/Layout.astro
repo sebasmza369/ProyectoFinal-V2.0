@@ -1,0 +1,52 @@
+---
+import Navbar from '../components/Navbar.astro';
+const { title } = Astro.props;
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title} | LecturaViva</title>
+  
+    <!-- 1. Importación de Google Fonts (Roboto) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- 2. Definición de variables CSS globales -->
+    <style is:global>
+      :root {
+        --color-primary: #2563eb;    /* Azul principal */
+        --color-secondary: #1e40af;  /* Azul oscuro */
+        --color-text-main: #111827;  /* Texto principal */
+        --color-text-muted: #4b5563; /* Texto secundario */
+        --color-bg-card: #ffffff;    /* Fondo de tarjetas */
+        --color-border: #e5e7eb;     /* Bordes */
+        --font-main: 'Roboto', sans-serif; /* Tipografía oficial */
+        --color-danger: #ef4444; /* Otras variables de tu tema... */
+        --color-danger-hover: #dc2626;
+      }
+
+      body {
+        font-family: var(--font-main);
+        color: var(--color-text-main);
+        background-color: #f9fafb;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  
+  <body>
+    <Navbar />
+    
+    <main style="padding: 0 2rem; max-width: 1200px; margin: 0 auto;">
+      <slot />
+    </main>
+
+    <footer style="text-align: center; padding: 2rem; margin-top: 4rem; background-color: #f9f9f9; border-top: 1px solid #eee;">
+      <p>&copy; 2026 LecturaViva - Proyecto Académico</p>
+    </footer>
+  </body>
+</html>

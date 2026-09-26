@@ -1,0 +1,142 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Agregar Nuevo Libro">
+  <section style="max-width: 600px; margin: 2rem auto;">
+    <h1 style="font-size: 2.25rem; font-weight: bold; margin-bottom: 0.5rem; color: var(--color-text-main); text-align: center;">
+      Agregar Nuevo Libro 📚
+    </h1>
+    <p style="color: var(--color-text-muted); margin-bottom: 2rem; text-align: center;">
+      Completa los campos para registrar un nuevo libro en el catálogo.
+    </p>
+
+    <!-- Formulario estructurado -->
+    <div style="background-color: var(--color-bg-card); border: 1px solid var(--color-border); border-radius: 8px; padding: 2rem; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);">
+      <form id="form-crear-libro" style="display: flex; flex-direction: column; gap: 1.25rem;">
+        
+        <!-- Campo: Título -->
+        <div>
+          <label for="titulo" style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: var(--color-text-main);">
+            Título del Libro *
+          </label>
+          <input 
+            type="text" 
+            id="titulo" 
+            name="titulo" 
+            required 
+            placeholder="Ej: Cien años de soledad" 
+            style="width: 100%; padding: 0.75rem; border: 1px solid var(--color-border); border-radius: 6px; box-sizing: border-box; font-family: inherit;"
+          />
+        </div>
+
+        <!-- Campo: Autor -->
+        <div>
+        <label for="autor" style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: var(--color-text-main);">
+            Autor *
+        </label>
+        <input 
+            type="text" 
+            id="autor" 
+            name="autor" 
+            required 
+            placeholder="Ej: Gabriel García Márquez" 
+            style="width: 100%; padding: 0.75rem; border: 1px solid var(--color-border); border-radius: 6px; box-sizing: border-box; font-family: inherit;"
+        />
+        </div>
+
+        <!-- Campo: Género -->
+        <div>
+            <label for="genero" style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: var(--color-text-main);">
+                Género *
+            </label>
+            <input 
+                type="text" 
+                id="genero" 
+                name="genero" 
+                required 
+                placeholder="Ej: Realismo Mágico" 
+                style="width: 100%; padding: 0.75rem; border: 1px solid var(--color-border); border-radius: 6px; box-sizing: border-box; font-family: inherit;"
+            />
+        </div>
+
+        <!-- Campo: Año de Publicación -->
+        <div>
+          <label for="anio_publicacion" style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: var(--color-text-main);">
+            Año de Publicación
+          </label>
+          <input 
+            type="number" 
+            id="anio_publicacion" 
+            name="anio_publicacion" 
+            placeholder="Ej: 1967" 
+            style="width: 100%; padding: 0.75rem; border: 1px solid var(--color-border); border-radius: 6px; box-sizing: border-box; font-family: inherit;"
+          />
+        </div>
+
+        <!-- Campo: Sinopsis -->
+        <div>
+          <label for="sinopsis" style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: var(--color-text-main);">
+            Sinopsis
+          </label>
+          <textarea 
+            id="sinopsis" 
+            name="sinopsis" 
+            rows="4" 
+            placeholder="Escribe un breve resumen del libro..." 
+            style="width: 100%; padding: 0.75rem; border: 1px solid var(--color-border); border-radius: 6px; box-sizing: border-box; font-family: inherit;"
+          ></textarea>
+        </div>
+
+        <!-- Botón de envío -->
+        <button 
+          type="submit" 
+          style="background-color: var(--color-primary); color: #ffffff; padding: 0.85rem; border: none; border-radius: 6px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: background-color 0.2s;"
+        >
+          Guardar Libro 💾
+        </button>
+      </form>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  const form = document.getElementById('form-crear-libro');
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    // 1. Obtener los valores de los inputs de texto
+    const formData = new FormData(form as HTMLFormElement);
+    const nuevoLibro = {
+      titulo: formData.get('titulo'),
+      autor: formData.get('autor'),
+      genero: formData.get('genero'),
+      anio_publicacion: formData.get('anio_publicacion') ? Number(formData.get('anio_publicacion')) : null,
+      sinopsis: formData.get('sinopsis')
+    };
+
+    try {
+      // 2. Enviar la petición POST a la API
+      const respuesta = await fetch('http://localhost:3000/api/v1/libros', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(nuevoLibro)
+      });
+
+      if (respuesta.ok) {
+        alert('¡Libro creado con éxito! 📚');
+        // 3. Redirigir al catálogo para ver el nuevo libro
+        window.location.href = '/catalogo';
+      } else {
+        const errorData = await respuesta.json();
+        alert(`Error: ${errorData.mensaje || 'No se pudo guardar el libro'}`);
+      }
+    } catch (error) {
+      console.error('Error de red:', error);
+      alert('Ocurrió un error al conectar con el servidor.');
+    }
+  });
+</script>

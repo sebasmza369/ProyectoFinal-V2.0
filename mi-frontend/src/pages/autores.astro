@@ -1,0 +1,53 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// 1. Consultamos la lista completa de autores a la API[cite: 2, 3]
+let autores = [];
+try {
+  const response = await fetch('http://localhost:3000/api/v1/autores');
+  if (response.ok) {
+    autores = await response.json();
+  }
+} catch (error) {
+  console.error('Error al obtener la lista de autores:', error);
+}
+---
+
+<Layout title="Autores - LecturaViva">
+  <section style="margin-top: 2rem;">
+    <!-- Encabezado de la sección 📌 -->
+    <div style="margin-bottom: 2rem;">
+      <h1 style="font-size: 2.25rem; font-weight: bold; margin-bottom: 0.5rem; color: var(--color-text-main);">
+        Nuestros Autores ✍️
+      </h1>
+      <p style="color: var(--color-text-muted); margin: 0;">
+        Conoce a las mentes creativas detrás de las obras de nuestra colección.
+      </p>
+    </div>
+
+    <!-- Grilla para las tarjetas de autores 🎴 -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;">
+      {autores.length > 0 ? (
+        autores.map((autor: any) => (
+          <article style="background-color: var(--color-bg-card); border: 1px solid var(--color-border); border-radius: 8px; padding: 1.5rem; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <h2 style="font-size: 1.3rem; font-weight: bold; margin-bottom: 0.5rem; color: var(--color-text-main);">
+                {autor.nombre}
+              </h2>
+              
+              <p style="color: var(--color-primary); font-size: 0.9rem; font-weight: 600; margin-bottom: 0.75rem;">
+                🌐 {autor.nacionalidad || 'Nacionalidad no especificada'}
+              </p>
+
+              <p style="color: var(--color-text-muted); font-size: 0.95rem; line-height: 1.5;">
+                {autor.biografia ? autor.biografia : 'Sin biografía disponible.'}
+              </p>
+            </div>
+          </article>
+        ))
+      ) : (
+        <p style="color: var(--color-text-muted);">No se pudieron cargar los autores o no hay ninguno registrado.</p>
+      )}
+    </div>
+  </section>
+</Layout>
