@@ -1,13 +1,11 @@
 ---
 import Layout from '../layouts/Layout.astro';
 
-// 1. Consultamos la API para obtener los libros[cite: 2]
 let librosDestacados = [];
 try {
   const response = await fetch('http://localhost:3000/api/v1/libros');
   if (response.ok) {
-    const todosLosLibros = await response.json();
-    // ✂️ Tomamos únicamente los primeros 3 libros
+    const todosLosLibros = await response.json();    
     librosDestacados = todosLosLibros.slice(0, 3);
   }
 } catch (error) {
@@ -16,7 +14,7 @@ try {
 ---
 
 <Layout title="Inicio - LecturaViva">
-  <!-- 1. HERO BANNER 🎯 -->
+  <!-- 1. HERO BANNER -->
   <section style="background-color: var(--color-bg-card); border: 1px solid var(--color-border); border-radius: 12px; padding: 3rem 2rem; margin-top: 1.5rem; text-align: center; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
     <h1 style="font-size: 2.5rem; font-weight: 800; color: var(--color-text-main); margin-bottom: 1rem;">
       Descubre tu próxima lectura favorita 📖
@@ -32,7 +30,7 @@ try {
     </a>
   </section>
 
-  <!-- 2. LIBROS DESTACADOS ⭐ -->
+  <!-- 2. LIBROS DESTACADOS -->
   <section style="margin-top: 3rem;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
       <h2 style="font-size: 1.75rem; font-weight: bold; color: var(--color-text-main); margin: 0;">
@@ -43,7 +41,7 @@ try {
       </a>
     </div>
 
-    <!-- Grilla de 3 tarjetas -->
+    <!-- Grillas -->
     <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;">
       {librosDestacados.length > 0 ? (
         librosDestacados.map((libro: any) => (

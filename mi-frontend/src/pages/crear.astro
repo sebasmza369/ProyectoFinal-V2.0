@@ -105,8 +105,7 @@ import Layout from '../layouts/Layout.astro';
 
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
-
-    // 1. Obtener los valores de los inputs de texto
+    
     const formData = new FormData(form as HTMLFormElement);
     const nuevoLibro = {
       titulo: formData.get('titulo'),
@@ -117,7 +116,7 @@ import Layout from '../layouts/Layout.astro';
     };
 
     try {
-      // 2. Enviar la petición POST a la API
+      
       const respuesta = await fetch('http://localhost:3000/api/v1/libros', {
         method: 'POST',
         headers: {
@@ -128,7 +127,7 @@ import Layout from '../layouts/Layout.astro';
 
       if (respuesta.ok) {
         alert('¡Libro creado con éxito! 📚');
-        // 3. Redirigir al catálogo para ver el nuevo libro
+        
         window.location.href = '/catalogo';
       } else {
         const errorData = await respuesta.json();

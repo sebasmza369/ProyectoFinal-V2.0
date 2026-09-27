@@ -1,7 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
 
-// 1. Consultamos la lista completa de autores a la API[cite: 2, 3]
 let autores = [];
 try {
   const response = await fetch('http://localhost:3000/api/v1/autores');
@@ -15,7 +14,7 @@ try {
 
 <Layout title="Autores - LecturaViva">
   <section style="margin-top: 2rem;">
-    <!-- Encabezado de la sección 📌 -->
+    <!-- Encabezado de la sección -->
     <div style="margin-bottom: 2rem;">
       <h1 style="font-size: 2.25rem; font-weight: bold; margin-bottom: 0.5rem; color: var(--color-text-main);">
         Nuestros Autores ✍️
@@ -25,7 +24,7 @@ try {
       </p>
     </div>
 
-    <!-- Grilla para las tarjetas de autores 🎴 -->
+    <!-- Grilla -->
     <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;">
       {autores.length > 0 ? (
         autores.map((autor: any) => (

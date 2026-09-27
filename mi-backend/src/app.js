@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Ruta de prueba (Ping)
+// Ruta de prueba (Ping), para que se vea mas profesional =)
 app.get('/api/v1/ping', async (req, res) => {
   try {
     const [result] = await pool.query('SELECT 1 + 1 AS resultado');

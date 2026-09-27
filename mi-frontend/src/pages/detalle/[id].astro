@@ -1,25 +1,19 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 
-// 1. Obtenemos el ID de la URL
 const { id } = Astro.params;
 
-// 2. Consultamos nuestra API Backend[cite: 1]
 const response = await fetch(`http://localhost:3000/api/v1/libros/${id}`);
 
-// 3. Si el libro no existe en la BD (error 404), redirigimos a /404
 if (!response.ok) {
-  return Astro.redirect('/404');
-}
+  return Astro.redirect('/404');}
 
-// 4. Extraemos el objeto libro en JSON[cite: 1]
 const libro = await response.json();
 ---
 
 <Layout title={libro.titulo}>
   <div style="background-color: var(--color-bg-card); border: 1px solid var(--color-border); border-radius: 8px; padding: 2rem; margin-top: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
-    
-    <!-- 📖 MODO LECTURA (Visible por defecto) -->
+        
     <div id="vista-lectura">
       <a href="/catalogo" style="color: var(--color-primary); text-decoration: none; font-weight: 500; display: inline-block; margin-bottom: 1rem;">
         ← Volver al catálogo
@@ -47,8 +41,7 @@ const libro = await response.json();
         <h2 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem;">Sinopsis</h2>
         <p>{libro.sinopsis ? libro.sinopsis : 'Sin descripción disponible.'}</p>
       </div>
-
-      <!-- Botón para activar el modo edición -->
+      
       <button 
         id="btn-activar-edicion" 
         style="background-color: var(--color-primary); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 6px; cursor: pointer; font-weight: 500;"
@@ -56,8 +49,7 @@ const libro = await response.json();
         ✏️ Editar Libro
       </button>
     </div>
-
-    <!-- ✏️ MODO EDICIÓN EN LÍNEA (Oculto por defecto) -->
+    
     <div id="vista-edicion" style="display: none;">
       <h2 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1.5rem; color: var(--color-text-main);">
         ✏️ Modificar Libro
@@ -148,7 +140,7 @@ const libro = await response.json();
 
   </div>
 
-  <!-- ⚡ SCRIPT PARA LA ALTERNANCIA Y ENVÍO DE DATOS -->
+  <!-- SCRIPT PARA LA ALTERNANCIA Y ENVÍO DE DATOS -->
   <script>
     const vistaLectura = document.getElementById('vista-lectura');
     const vistaEdicion = document.getElementById('vista-edicion');
@@ -156,24 +148,21 @@ const libro = await response.json();
     const btnActivar = document.getElementById('btn-activar-edicion');
     const btnCancelar = document.getElementById('btn-cancelar-edicion');
     const form = document.getElementById('form-editar-inline');
-
-    // 1. Mostrar formulario de edición
+    
     btnActivar?.addEventListener('click', () => {
       if (vistaLectura && vistaEdicion) {
         vistaLectura.style.display = 'none';
         vistaEdicion.style.display = 'block';
       }
     });
-
-    // 2. Ocultar formulario de edición (Cancelar)
+   
     btnCancelar?.addEventListener('click', () => {
       if (vistaLectura && vistaEdicion) {
         vistaEdicion.style.display = 'none';
         vistaLectura.style.display = 'block';
       }
     });
-
-    // 3. Enviar cambios al backend con PUT
+    
     form?.addEventListener('submit', async (e) => {
       e.preventDefault();
 

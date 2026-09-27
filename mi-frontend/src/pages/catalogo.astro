@@ -14,7 +14,7 @@ import Layout from '../layouts/Layout.astro';
         </p>
       </div>
 
-      <!-- ➕ Botón para ir a la vista de creación -->
+      <!-- Botón para la creación -->
       <a 
         href="/crear" 
         style="display: inline-block; background-color: var(--color-primary); color: #ffffff; padding: 0.75rem 1.25rem; border-radius: 6px; text-decoration: none; font-weight: 600; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);"
@@ -23,7 +23,7 @@ import Layout from '../layouts/Layout.astro';
       </a>
     </div>
 
-    <!-- 🔍 BARRA DE BÚSQUEDA ÚNICA -->
+    <!-- BARRA DE BÚSQUEDA -->
     <div style="margin-bottom: 2rem; display: flex; gap: 0.5rem; max-width: 500px;">
       <input 
         type="text" 
@@ -39,9 +39,8 @@ import Layout from '../layouts/Layout.astro';
       </button>
     </div>
 
-    <!-- 📦 CONTENEDOR ÚNICO DE TARJETAS -->
+    <!-- CONTENEDOR TARJETAS -->
     <div id="contenedor-libros" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;">
-      <!-- Se llena dinámicamente con JavaScript -->
     </div>
   </section>
 </Layout>
@@ -50,8 +49,7 @@ import Layout from '../layouts/Layout.astro';
   const contenedor = document.getElementById('contenedor-libros') as HTMLElement;
   const inputBusqueda = document.getElementById('input-busqueda') as HTMLInputElement;
   const btnBuscar = document.getElementById('btn-buscar');
-
-  // 1. Función para obtener libros de la API y pintar las tarjetas
+  
   async function cargarLibros(buscar = '') {
     try {
       const url = buscar 
@@ -65,8 +63,7 @@ import Layout from '../layouts/Layout.astro';
         contenedor.innerHTML = '<p style="color: var(--color-text-muted);">No se encontraron libros que coincidan con la búsqueda.</p>';
         return;
       }
-
-      // Renderizado dinámico (Ruta /detalle/ corregida) 🎨
+     
       contenedor.innerHTML = libros.map((libro: any) => `
         <article style="background-color: var(--color-bg-card); border: 1px solid var(--color-border); border-radius: 8px; padding: 1.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: space-between;">
           <div>
